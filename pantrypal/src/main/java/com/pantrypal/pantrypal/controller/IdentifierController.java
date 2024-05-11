@@ -1,5 +1,7 @@
 package com.pantrypal.pantrypal.controller;
 
+import com.pantrypal.pantrypal.model.IdentifierResponse;
+import com.pantrypal.pantrypal.model.IngredientList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,10 +27,11 @@ public class IdentifierController {
     public ResponseEntity<?> identify(@RequestParam String imageUrl) throws UnsupportedEncodingException {
         try{
             String url = targetUrl + imageUrl;
-            ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+            ResponseEntity<IdentifierResponse> response = restTemplate.postForEntity(url, null, IdentifierResponse.class);
+            String content = response.getBody().getMessage().getContent();
+            IngredientList ingredients = new IngredientList(content);
+            return ResponseEntity.ok(ingredients);
         } catch (Exception e) {
-            // Handle exceptions, possibly returning an appropriate HTTP status
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
