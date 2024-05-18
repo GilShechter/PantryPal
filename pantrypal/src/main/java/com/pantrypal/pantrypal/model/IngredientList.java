@@ -22,6 +22,11 @@ public class IngredientList {
         this.ingredients = ingredientsArrayList;
     }
 
+    @Override
+    public String toString() {
+        return String.join(",", ingredients);
+    }
+
     public List<String> getIngredients() {
         return ingredients;
     }

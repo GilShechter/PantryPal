@@ -10,21 +10,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/api/identifier")
 public class IdentifierController {
 
-    @Value("${api.target.url}")
+    @Value("${identifier.api.target.url}")
     private String targetUrl;
 
     @Autowired
     private RestTemplate restTemplate;
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<?> identify(@RequestParam String imageUrl) throws UnsupportedEncodingException {
+    public ResponseEntity<?> identify(@RequestParam String imageUrl) {
         try{
             String url = targetUrl + imageUrl;
             ResponseEntity<IdentifierResponse> response = restTemplate.postForEntity(url, null, IdentifierResponse.class);
