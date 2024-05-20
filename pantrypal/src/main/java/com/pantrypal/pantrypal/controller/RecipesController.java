@@ -1,7 +1,10 @@
 package com.pantrypal.pantrypal.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pantrypal.pantrypal.model.RecipeInformation;
 import com.pantrypal.pantrypal.model.RecipePreview;
+import com.pantrypal.pantrypal.repo.RecipeInformationService;
 import com.pantrypal.pantrypal.repo.RecipePreviewService;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,6 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -31,6 +38,9 @@ public class RecipesController {
     RecipePreviewService recipePreviewService;
 
     @Autowired
+    RecipeInformationService recipeInformationService;
+
+    @Autowired
     ObjectMapper om;
 
     @RequestMapping(value = "/searchByIngredients", method = RequestMethod.GET)
@@ -47,10 +57,16 @@ public class RecipesController {
     }
 
     @RequestMapping(value = "/getRecipeInfo", method = RequestMethod.GET)
-    public ResponseEntity<?> getRecipeInfo(@RequestParam String id) {
+    public ResponseEntity<?> getRecipeInfo(@RequestParam int id) {
         try{
+            Optional<RecipeInformation> optionalRecipe = recipeInformationService.findById(id);
+            if (optionalRecipe.isPresent()) {
+                return ResponseEntity.ok(optionalRecipe.get());
+            }
             String url = targetUrl + id + "/information";
-            return executeHttpRequest(url);
+            String responseBody = executeHttpRequest(url).getBody().toString();
+            RecipeInformation recipe = mapRecipeInformation(responseBody);
+            return ResponseEntity.ok(recipe);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
@@ -71,5 +87,23 @@ public class RecipesController {
                 .addHeader("X-RapidAPI-Key", apiKey)
                 .addHeader("X-RapidAPI-Host", apiHost)
                 .build();
+    }
+
+    private RecipeInformation mapRecipeInformation(String responseBody) throws IOException {
+        JsonNode node = om.readTree(responseBody);
+        RecipeInformation recipe = new RecipeInformation();
+        recipe.setId(node.get("id").asInt());
+        recipe.setTitle(node.get("title").asText());
+        recipe.setReadyInMinutes(node.get("readyInMinutes").asInt());
+        recipe.setImage(node.get("image").asText());
+        recipe.setInstructions(node.get("instructions").asText());
+        recipe.setSourceUrl(node.get("sourceUrl").asText());
+
+        List<String> extendedIngredients = StreamSupport.stream(node.get("extendedIngredients").spliterator(), false)
+                .map(ingredientNode -> ingredientNode.get("original").asText())
+                .collect(Collectors.toList());
+        recipe.setExtendedIngredients(extendedIngredients);
+
+        return recipe;
     }
 }
