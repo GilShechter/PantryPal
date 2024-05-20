@@ -59,9 +59,9 @@ public class RecipesController {
     @RequestMapping(value = "/getRecipeInfo", method = RequestMethod.GET)
     public ResponseEntity<?> getRecipeInfo(@RequestParam int id) {
         try{
-            Optional<RecipeInformation> optionalRecipe = recipeInformationService.findById(id);
-            if (optionalRecipe.isPresent()) {
-                return ResponseEntity.ok(optionalRecipe.get());
+            ResponseEntity optionalRecipe = getRecipe(id);
+            if (optionalRecipe.getStatusCode().is2xxSuccessful()) {
+                return ResponseEntity.ok(optionalRecipe);
             }
             String url = targetUrl + id + "/information";
             String responseBody = executeHttpRequest(url).getBody().toString();
@@ -70,6 +70,33 @@ public class RecipesController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createRecipe(@RequestBody RecipeInformation recipeInformation) {
+        RecipeInformation savedRecipe = recipeInformationService.save(recipeInformation);
+        return ResponseEntity.ok(savedRecipe);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getRecipe(@PathVariable int id) {
+        Optional<RecipeInformation> recipe = recipeInformationService.findById(id);
+        if (recipe.isPresent()) {
+            return ResponseEntity.ok(recipe.get());
+        }
+        return ResponseEntity.status(404).body("Recipe not found");
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllRecipes() {
+        Iterable<RecipeInformation> recipes = recipeInformationService.findAll();
+        return ResponseEntity.ok(recipes);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRecipe(@PathVariable int id) {
+        recipeInformationService.deleteById(id);
+        return ResponseEntity.ok("Recipe id " + id + " deleted successfully");
     }
 
     @NotNull
