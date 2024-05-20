@@ -1,9 +1,13 @@
 package com.pantrypal.pantrypal.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pantrypal.pantrypal.model.RecipePreview;
+import com.pantrypal.pantrypal.repo.RecipePreviewService;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +27,20 @@ public class RecipesController {
     @Value("${recipes.api.host}")
     private String apiHost;
 
+    @Autowired
+    RecipePreviewService recipePreviewService;
+
+    @Autowired
+    ObjectMapper om;
+
     @RequestMapping(value = "/searchByIngredients", method = RequestMethod.GET)
     public ResponseEntity<?> searchByIngredients(@RequestParam String ingredients) {
         try{
             String url = targetUrl + "findByIngredients?ingredients=" + ingredients;
-            return executeHttpRequest(url);
+            ResponseEntity<?> responseEntity  = executeHttpRequest(url);
+            String responseBody = responseEntity.getBody().toString();
+            RecipePreview[] recipes = om.readValue(responseBody, RecipePreview[].class);
+            return ResponseEntity.ok(recipes);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
