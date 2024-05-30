@@ -1,8 +1,11 @@
+from urllib.parse import unquote
+
 from fastapi import FastAPI, HTTPException
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
 import requests
+from pydantic import BaseModel
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -10,16 +13,21 @@ app = FastAPI()
 client = OpenAI(api_key=API_KEY)
 
 
+class ImageRequest(BaseModel):
+    image_url: str
+
+
 @app.post('/analyze_image/')
-async def analyze_image(image_url: str):
-    if not image_url:
+async def analyze_image(request: ImageRequest):
+    image_url = request.image_url
+    if not image_url or image_url == "":
         raise HTTPException(status_code=400, detail="Missing image_url parameter")
 
     try:
         await check_image_url(image_url)
         print("Image URL: ", image_url)
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o",
             messages=[
                 {
                     "role": "user",
@@ -39,6 +47,7 @@ async def analyze_image(image_url: str):
 
 async def check_image_url(image_url: str):
     response = requests.head(image_url)
+    print("Response: ", response.status_code, "For URL: ", image_url)
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Invalid image URL")
 

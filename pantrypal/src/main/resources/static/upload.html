@@ -30,10 +30,30 @@
     </header>
     <section id="uploadSection" class="hero">
       <h1>Upload an Image</h1>
-      <form id="uploadForm">
-        <label for="imageUrl">Image URL:</label>
-        <input type="text" id="imageUrl" name="imageUrl" required />
-        <button type="submit">Analyze Image</button>
+      <form
+        id="uploadForm"
+        class="mb-3"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <label for="imageUrl">Insert image URL:</label>
+        <input type="text" id="imageUrl" class="form-control" /> <br />
+        <div class="separator">
+          <div class="separator-text"><span>OR</span></div>
+          <hr />
+        </div>
+        <br />
+        <label for="imageFile">Upload an image:</label>
+        <input
+          type="file"
+          id="imageFile"
+          class="form-control"
+          accept="image/*"
+        />
+        <br />
+        <button type="submit" class="btn btn-primary mb-3">
+          Analyze Image
+        </button>
       </form>
     </section>
     <div class="spinner" id="spinner"></div>

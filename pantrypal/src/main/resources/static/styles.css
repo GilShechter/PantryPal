@@ -209,3 +209,38 @@ body {
   margin: 10px auto;
   text-align: center;
 }
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.separator-text {
+  position: absolute;
+  left: 45%;
+  background-color: #fff;
+  width: 40px;
+  z-index: 1;
+}
+
+.separator hr {
+  flex: 1;
+  border: 0;
+  border-top: 1px solid #666;
+  margin: 0 10px;
+  z-index: 0;
+}
+
+.separator span {
+  color: #666;
+}
+
+#uploadSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 20px;
+}
