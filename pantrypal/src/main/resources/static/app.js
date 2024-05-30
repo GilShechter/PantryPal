@@ -2,12 +2,12 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
     e.preventDefault();
 
     const imageUrl = document.getElementById('imageUrl').value;
+    const imageFile = $('#imageFile')[0].files[0];
     const ingredientsList = document.getElementById('ingredientsList');
     const recipesList = document.getElementById('recipesList');
     const spinner = document.getElementById('spinner');
     const uploadSection = document.getElementById('uploadSection');
     const recipeDetailsCard = document.getElementById('recipeDetailsCard');
-
 
     // Clear previous results
     ingredientsList.innerHTML = '';
@@ -17,14 +17,44 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
     uploadSection.style.display = 'none';
     spinner.style.display = 'block';
 
+    let requestImageUrl;
+
     try {
+        if (imageFile) {
+            let formData = new FormData();
+            formData.append('imageFile', imageFile);
+            const uploadResponse = await fetch('/api/identifier/imageFile', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!uploadResponse.ok) {
+                throw new Error('Failed to analyze image');
+            }
+            const reader = uploadResponse.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+                result += decoder.decode(value);
+            }
+            requestImageUrl = result;
+        } else if (imageUrl) {
+            requestImageUrl = imageUrl;
+        } else {
+            throw new Error('Please provide an image URL or upload a file.');
+        }
+
+        console.log('Request image URL:', requestImageUrl);
+        const formData = new FormData();
+        formData.append('imageUrl', requestImageUrl);
         // Analyze the image to get ingredients
         const response = await fetch('/api/identifier', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({ imageUrl }),
+            body: formData,
         });
 
         if (!response.ok) {
