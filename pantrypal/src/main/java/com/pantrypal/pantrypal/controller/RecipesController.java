@@ -2,6 +2,7 @@ package com.pantrypal.pantrypal.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pantrypal.pantrypal.jwt.DBUserService;
 import com.pantrypal.pantrypal.model.RecipeInformation;
 import com.pantrypal.pantrypal.model.RecipePreview;
 import com.pantrypal.pantrypal.repo.RecipeInformationService;
@@ -39,6 +40,9 @@ public class RecipesController {
 
     @Autowired
     RecipeInformationService recipeInformationService;
+
+    @Autowired
+    DBUserService userService;
 
     @Autowired
     ObjectMapper om;
