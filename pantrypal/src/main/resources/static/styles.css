@@ -7,9 +7,11 @@ body {
   }
   header {
     background-color: #fff;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
   }
 
   .navbar-container {
@@ -28,6 +30,10 @@ body {
     text-decoration: none;
   }
 
+  #navbarNav {
+    justify-content: end;
+  }
+
   header img {
     height: 70px;
     padding: 5px 20px;
@@ -37,12 +43,18 @@ body {
     margin: 0 10px;
     text-decoration: none;
   }
+  .main-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
   .hero {
     text-align: center;
     padding: 100px 20px;
     background-size: cover;
     position: relative;
     z-index: 1;
+    width: 60%;
   }
   .hero h1 {
     font-family: "Roboto", sans-serif;
@@ -61,10 +73,7 @@ body {
   .hero button:hover {
         background-color: rgb(47, 115, 245, 0.8);
   }
-  .features,
-  .how-it-works,
-  .testimonials,
-  .contact {
+  .features {
     text-align: center;
     height: 30%;
     background-color: rgba(255, 255, 255, 0.9);
@@ -72,8 +81,7 @@ body {
     position: absolute;
     width: 100%;
   }
-  .features div,
-  .how-it-works div {
+  .features div {
     display: inline-block;
     width: 30%;
     padding: 10px;
@@ -243,4 +251,34 @@ body {
   align-items: center;
   flex-direction: column;
   margin: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .features {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .features div {
+    width: 100%;
+  }
+  .main-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .hero {
+    width: 100%;
+  }
+  footer {
+    position: relative;
+  }
+  .floating-image {
+    width: 30px;
+    height: 30px;
+    opacity: 0.4;
+  }
+  .navbar-container {
+    width: 100%;
+    padding: 0 20px;
+  }
 }
