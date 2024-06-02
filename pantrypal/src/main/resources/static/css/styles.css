@@ -43,7 +43,9 @@ body {
     margin: 0 10px;
     text-decoration: none;
   }
-  .main-content {
+  .main-content,
+  .login-container,
+  .signup-container {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -261,6 +263,24 @@ body {
   margin: 20px;
 }
 
+.login-section,
+.signup-section {
+  padding: 40px;
+  margin-top: 50px;
+  width: 30%;
+  border-radius: 50px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+@media screen and (max-width: 1024px){
+  .login-section,
+  .signup-section {
+    width: 50%;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .features {
     display: flex;
@@ -292,5 +312,9 @@ body {
   .navbar-container {
     width: 100%;
     padding: 0 20px;
+  }
+  .login-section,
+  .signup-section {
+    width: 70%;
   }
 }
