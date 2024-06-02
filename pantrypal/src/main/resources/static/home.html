@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <div class="main-content">
+      <div class="ingredients-images">
+        <img
+          th:src="@{/images/ingredients/bread.png}"
+          class="floating-image float-a"
+          alt="Bread"
+        />
+        <img
+          th:src="@{/images/ingredients/carrot.png}"
+          class="floating-image float-a"
+          alt="Carrot"
+        />
+        <img
+          th:src="@{/images/ingredients/Broccoli.png}"
+          class="floating-image float-a"
+          alt="Broccoli"
+        />
+        <img
+          th:src="@{/images/ingredients/milk.png}"
+          class="floating-image float-a"
+          alt="Milk"
+        />
+        <img
+          th:src="@{/images/ingredients/onion.png}"
+          class="floating-image float-b"
+          alt="Onion"
+        />
+        <img
+          th:src="@{/images/ingredients/steak.png}"
+          class="floating-image float-b"
+          alt="Steak"
+        />
+        <img
+          th:src="@{/images/ingredients/tomato.png}"
+          class="floating-image float-b"
+          alt="Tomato"
+        />
+      </div>
+      <div class="main-content">
+        <section class="hero">
+          <h1>Transform Your Groceries into Delicious Recipes</h1>
+          <br />
+          <h2>Upload an image of your groceries and get a list of recipes</h2>
+          <br />
+          <a th:href="@{/upload}"><button>Upload an Image</button></a>
+        </section>
+        <section class="features">
+          <h1>Features</h1>
+          <br />
+          <div>
+            <h3>Image Recognition</h3>
+            <p>Automatically identify ingredients from your grocery images</p>
+          </div>
+          <div>
+            <h3>Recipe Suggestions</h3>
+            <p>Get recipe ideas based on available ingredients</p>
+          </div>
+          <div>
+            <h3>Save & Share</h3>
+            <p>Save your favorite recipes and share them with friends</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

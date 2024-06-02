@@ -48,6 +48,14 @@ body {
     display: flex;
     justify-content: center;
   }
+
+  .upload-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
   .hero {
     text-align: center;
     padding: 100px 20px;
@@ -266,7 +274,11 @@ body {
     display: flex;
     flex-direction: column;
   }
-  .hero {
+  .upload-content {
+      width: 90%;
+  }
+  .hero,
+  .results {
     width: 100%;
   }
   footer {

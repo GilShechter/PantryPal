@@ -64,7 +64,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**",
                 "/api/recipes/searchByIngredients",
                 "/api/recipes/getRecipeInfo",
-                "/api/identifier/**"
+                "/api/identifier/**",
+                "/**",
+                "/images/**",
+                "/css/**"
                 ).permitAll()
         .antMatchers(HttpMethod.OPTIONS,"/**").permitAll().
 

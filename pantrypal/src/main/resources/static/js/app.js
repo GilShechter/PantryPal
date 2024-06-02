@@ -2,12 +2,13 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
     e.preventDefault();
 
     const imageUrl = document.getElementById('imageUrl').value;
-    const imageFile = $('#imageFile')[0].files[0];
+    const imageFile = document.getElementById('imageFile').files[0];
     const ingredientsList = document.getElementById('ingredientsList');
     const recipesList = document.getElementById('recipesList');
     const spinner = document.getElementById('spinner');
     const uploadSection = document.getElementById('uploadSection');
     const recipeDetailsCard = document.getElementById('recipeDetailsCard');
+    const closeDetailsBtn = document.getElementById('closeDetailsBtn');
 
     // Clear previous results
     ingredientsList.innerHTML = '';
@@ -125,12 +126,14 @@ async function showRecipeDetails(recipeId) {
         const recipe = await response.json();
 
         // Populate the expandable card with recipe details
-        $('#detailsTitle').text(recipe.title);
-        $('#detailsImage').attr('src', recipe.image).attr('alt', recipe.title);
-        $('#detailsReadyInMinutes').text(recipe.readyInMinutes);
-        $('#detailsInstructions').text(recipe.instructions);
-        $('#detailsSourceUrl').attr('href', recipe.sourceUrl).text(recipe.sourceUrl);
-        $('#detailsIngredients').text(recipe.extendedIngredients.join(', '));
+        document.getElementById('detailsTitle').textContent = recipe.title;
+        document.getElementById('detailsImage').src = recipe.image;
+        document.getElementById('detailsImage').alt = recipe.title;
+        document.getElementById('detailsReadyInMinutes').textContent = recipe.readyInMinutes;
+        document.getElementById('detailsInstructions').textContent = recipe.instructions;
+        document.getElementById('detailsSourceUrl').href = recipe
+        document.getElementById('detailsSourceUrl').textContent = recipe.sourceUrl;
+        document.getElementById('detailsIngredients').textContent = recipe.extendedIngredients.join(', ');
 
         // Show the expandable card
         recipeDetailsCard.style.display = 'block';
@@ -142,9 +145,10 @@ async function showRecipeDetails(recipeId) {
     }
 }
 
-$('#closeDetailsBtn').on('click', function() {
+closeDetailsBtn.addEventListener('click', function() {
     // Hide the details card and show the recipes section
     recipeDetailsCard.style.display = 'none';
     recipesList.style.display = 'block';
     ingredientsList.style.display = 'block';
 });
+
