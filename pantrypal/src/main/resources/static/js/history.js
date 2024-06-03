@@ -101,17 +101,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('likeBtn').addEventListener('click', async () => {
+      const recipeId = document.querySelector('.recipe-preview .recipe-card').getAttribute('data-recipe-id');
       if (document.getElementById('likeBtn').innerHTML === heartEmptyHtml) {
         document.getElementById('likeBtn').innerHTML = heartFillHtml;
-        await likeRecipe();
+        await likeRecipe(recipeId);
       } else {
         document.getElementById('likeBtn').innerHTML = heartEmptyHtml;
-        await unlikeRecipe();
+        await unlikeRecipe(recipeId);
       }
     });
 
-    async function likeRecipe() {
-      const recipeId = document.querySelector('.recipe-preview .recipe-card').getAttribute('data-recipe-id');
+    async function likeRecipe(recipeId) {
       const response = await fetch(`/api/user/${userId}/like?recipeId=${recipeId}`, {
         method: 'POST',
         headers: {
@@ -123,8 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    async function unlikeRecipe() {
-        const recipeId = document.querySelector('.recipe-preview .recipe-card').getAttribute('data-recipe-id');
+    async function unlikeRecipe(recipeId) {
         const response = await fetch(`/api/user/${userId}/unlike?recipeId=${recipeId}`, {
             method: 'POST',
             headers: {
