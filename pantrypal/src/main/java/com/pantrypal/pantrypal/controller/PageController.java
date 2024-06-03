@@ -41,4 +41,11 @@ public class PageController {
         model.addAttribute("subpage", "history");
         return "index";
     }
+
+    @GetMapping("/liked")
+    public String liked(Model model) {
+        model.addAttribute("title", "Liked Recipes - PantryPal");
+        model.addAttribute("subpage", "history");
+        return "index";
+    }
 }

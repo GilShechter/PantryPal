@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-  
+
+    const title = document.title;
+
     const viewedRecipesSection = document.getElementById('viewedRecipesSection');
     const spinner = document.getElementById('spinner');
     const recipeDetailsCard = document.getElementById('recipeDetailsCard');
@@ -9,15 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const heartFillHtml = "<img src=\"/images/heartFill.png\" alt=\"Like\">";
     const heartEmptyHtml = "<img src=\"/images/heartEmpty.png\" alt=\"Like\">";
+    let action;
   
     if (viewedRecipesSection) {
+      title === 'History - PantryPal' ? action = 'viewed' : action = 'liked';
       fetchViewedRecipes();
     }
   
     async function fetchViewedRecipes() {
       try {
         spinner.style.display = 'block';
-        const response = await fetch(`api/user/${userId}/viewed`, {
+        const response = await fetch(`api/user/${userId}/${action}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
