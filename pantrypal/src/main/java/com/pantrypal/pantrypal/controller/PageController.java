@@ -34,4 +34,11 @@ public class PageController {
         model.addAttribute("subpage", "signup");
         return "index";
     }
+
+    @GetMapping("/history")
+    public String history(Model model) {
+        model.addAttribute("title", "History - PantryPal");
+        model.addAttribute("subpage", "history");
+        return "index";
+    }
 }

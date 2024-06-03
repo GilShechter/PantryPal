@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <div class="main-content">
+      <div class="results">
+        <section id="viewedRecipesSection">
+          <div id="viewedRecipesList"></div>
+        </section>
+        <div class="spinner" id="spinner"></div>
+        <section class="recipe-info" id="recipeDetailsCard">
+          <div class="card mb-3 details-card">
+            <img src="" class="card-img-top" alt="" id="detailsImage" />
+            <div class="card-body">
+              <h5 class="card-title" id="detailsTitle"></h5>
+              <p class="card-text">
+                <strong>Ready in:</strong>
+                <span id="detailsReadyInMinutes"></span> minutes
+              </p>
+              <p class="card-text">
+                <strong>Instructions:</strong>
+                <span id="detailsInstructions"></span>
+              </p>
+              <p class="card-text">
+                <strong>Source:</strong>
+                <a href="" target="_blank" id="detailsSourceUrl"></a>
+              </p>
+              <p class="card-text">
+                <strong>Ingredients:</strong>
+                <span id="detailsIngredients"></span>
+              </p>
+              <button class="like-btn" id="likeBtn"></button>
+              <button class="btn btn-secondary close-btn" id="closeDetailsBtn">
+                Close
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" th:src="@{/js/history.js}"></script>
+  </body>
+</html>
