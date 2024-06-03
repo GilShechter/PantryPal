@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.id);
                 window.location.href = '/'; // Redirect to home page
             } else {
                 alert('Login failed. Please check your credentials and try again.');
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.id);
                 window.location.href = '/'; // Redirect to home page
             } else {
                 alert('Signup failed. Please try again.');
