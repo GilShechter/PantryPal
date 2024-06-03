@@ -43,10 +43,16 @@
           <a th:href="@{/upload}" class="nav-link" aria-current="page">Upload</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link" aria-current="page">Features</a>
+          <a href="#features" class="nav-link" aria-current="page">Features</a>
         </li>
-        <li class="nav-item">
-          <a class="btn btn-primary" href="#" role="button">Login</a>
+        <li class="nav-item" id="likedNavItem" style="display: none;">
+          <a href="@{/liked}" class="nav-link">Liked</a>
+        </li>
+        <li class="nav-item" id="historyNavItem" style="display: none;">
+          <a href="@{/history}" class="nav-link">History</a>
+        </li>
+        <li class="nav-item" id="loginNavItem">
+          <a class="btn btn-primary" th:href="@{/login}" role="button">Login</a>
         </li>
       </ul>
     </div>
@@ -62,5 +68,6 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"
 ></script>
+<script type="module" th:src="@{/js/home.js}"></script>
 </body>
 </html>

@@ -20,4 +20,18 @@ public class PageController {
         model.addAttribute("subpage", "upload");
         return "index";
     }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("title", "Login - PantryPal");
+        model.addAttribute("subpage", "login");
+        return "index";
+    }
+
+    @GetMapping("/signup")
+    public String signup(Model model) {
+        model.addAttribute("title", "Sign Up - PantryPal");
+        model.addAttribute("subpage", "signup");
+        return "index";
+    }
 }
