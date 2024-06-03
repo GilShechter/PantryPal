@@ -82,10 +82,10 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
         const recipesHtml = recipes.map(recipe => `
             <div class="card mb-3 recipe-card" style="max-width: 540px;" data-recipe-id="${recipe.id}">
               <div class="row g-0">
-                <div class="col-md-4">
+                <div class="col-sm-5">
                   <img src="${recipe.image}" class="img-fluid rounded-start" alt="${recipe.title}">
                 </div>
-                <div class="col-md-8">
+                <div class="col-sm-7">
                   <div class="card-body">
                     <h5 class="card-title">${recipe.title}</h5>
                     <p class="card-text">Likes: ${recipe.likes}<br>Used Ingredients: ${recipe.usedIngredientCount}<br>Missed Ingredients: ${recipe.missedIngredientCount}</p>

@@ -83,6 +83,9 @@ body {
   .hero button:hover {
         background-color: rgb(47, 115, 245, 0.8);
   }
+  .results{
+    max-width: 540px;
+  }
   .features {
     text-align: center;
     height: 30%;
@@ -216,9 +219,15 @@ body {
     list-style: none;
 }
 
+.recipes-list img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
 .recipe-info {
   display: none;
-  margin: 0 auto;
+  margin-bottom: 50px;
   max-width: 540px;
 }
 
@@ -290,16 +299,18 @@ body {
   .features div {
     width: 100%;
   }
-  .main-content {
+  .main-content,
+  .upload-content {
     display: flex;
     flex-direction: column;
   }
   .upload-content {
-      width: 90%;
+      align-items: center;
+      width: 100%;
   }
   .hero,
   .results {
-    width: 100%;
+    width: 90%;
   }
   footer {
     position: relative;
