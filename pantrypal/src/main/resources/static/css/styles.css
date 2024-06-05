@@ -206,6 +206,7 @@ body {
 }
 .like-btn {
   border: none;
+  background-color: transparent;
 }
 
 .recipe-card {
