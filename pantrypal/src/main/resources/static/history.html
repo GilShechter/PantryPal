@@ -1,43 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
   <body>
-    <div class="upload-content">
-      <section id="uploadSection" class="hero">
-        <h1>Upload an Image</h1>
-        <form
-          id="uploadForm"
-          class="mb-3"
-          method="POST"
-          enctype="multipart/form-data"
-        >
-          <label for="imageUrl">Insert image URL:</label>
-          <input type="text" id="imageUrl" class="form-control" /> <br />
-          <div class="separator">
-            <div class="separator-text"><span>OR</span></div>
-            <hr />
-          </div>
-          <br />
-          <label for="imageFile">Upload an image:</label>
-          <input
-            type="file"
-            id="imageFile"
-            class="form-control"
-            accept="image/*"
-          />
-          <br />
-          <button type="submit" class="btn btn-primary mb-3">
-            Analyze Image
-          </button>
-        </form>
-      </section>
+    <div class="main-content">
       <div class="results">
+        <section id="viewedRecipesSection">
+          <div id="viewedRecipesList"></div>
+        </section>
         <div class="spinner" id="spinner"></div>
-        <section class="ingredients-list">
-          <div id="ingredientsList"></div>
-        </section>
-        <section class="recipes-list" id="recipesSection">
-          <div id="recipesList"></div>
-        </section>
         <section class="recipe-info" id="recipeDetailsCard">
           <div class="card mb-3 details-card">
             <img src="" class="card-img-top" alt="" id="detailsImage" />
@@ -59,9 +28,7 @@
                 <strong>Ingredients:</strong>
                 <span id="detailsIngredients"></span>
               </p>
-              <button class="like-btn" id="likeBtn" style="display: none">
-                <img src="/images/heartEmpty.png" alt="Like" />
-              </button>
+              <button class="like-btn" id="likeBtn"></button>
               <button class="btn btn-secondary close-btn" id="closeDetailsBtn">
                 Close
               </button>
@@ -75,6 +42,6 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script type="module" th:src="@{/js/app.js}"></script>
+    <script type="module" th:src="@{/js/history.js}"></script>
   </body>
 </html>

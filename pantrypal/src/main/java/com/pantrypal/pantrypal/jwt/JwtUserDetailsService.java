@@ -26,4 +26,8 @@ public class JwtUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found : " + userName);
         }
     }
+
+    public DBUser getUserByUsername(String username) {
+        return userService.findUserName(username).orElse(null);
+    }
 }

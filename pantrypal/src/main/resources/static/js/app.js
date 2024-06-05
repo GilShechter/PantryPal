@@ -9,6 +9,14 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
     const uploadSection = document.getElementById('uploadSection');
     const recipeDetailsCard = document.getElementById('recipeDetailsCard');
     const closeDetailsBtn = document.getElementById('closeDetailsBtn');
+    const likeBtn = document.getElementById('likeBtn');
+    const userId = localStorage.getItem('userId');
+    let recipeId;
+    let liked = false;
+
+
+    const heartFillHtml = "<img src=\"/images/heartFill.png\" alt=\"Like\">";
+    const heartEmptyHtml = "<img src=\"/images/heartEmpty.png\" alt=\"Like\">";
 
     // Clear previous results
     ingredientsList.innerHTML = '';
@@ -99,7 +107,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
         // Add event listeners to recipe cards
         document.querySelectorAll('.recipe-card').forEach(card => {
             card.addEventListener('click', function() {
-                const recipeId = this.getAttribute('data-recipe-id');
+                recipeId = this.getAttribute('data-recipe-id');
                 showRecipeDetails(recipeId);
             });
         });
@@ -110,45 +118,144 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
         // Hide the spinner
         spinner.style.display = 'none';
     }
-});
 
-async function showRecipeDetails(recipeId) {
-    try {
-        ingredientsList.style.display = 'none';
-        recipesList.style.display = 'none';
-        spinner.style.display = 'block';
+    async function showRecipeDetails(recipeId) {
+        try {
+            ingredientsList.style.display = 'none';
+            recipesList.style.display = 'none';
+            spinner.style.display = 'block';
 
-        // Fetch recipe information from the server
-        const response = await fetch(`/api/recipes/getRecipeInfo?id=${recipeId}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch recipe details');
+            // Fetch recipe information from the server
+            const response = await fetch(`/api/recipes/getRecipeInfo?id=${recipeId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch recipe details');
+            }
+            const recipe = await response.json();
+
+            // Populate the expandable card with recipe details
+            document.getElementById('detailsTitle').textContent = recipe.title;
+            document.getElementById('detailsImage').src = recipe.image;
+            document.getElementById('detailsImage').alt = recipe.title;
+            document.getElementById('detailsReadyInMinutes').textContent = recipe.readyInMinutes;
+            document.getElementById('detailsInstructions').textContent = recipe.instructions;
+            document.getElementById('detailsSourceUrl').href = recipe
+            document.getElementById('detailsSourceUrl').textContent = recipe.sourceUrl;
+            document.getElementById('detailsIngredients').textContent = recipe.extendedIngredients.join(', ');
+
+            // Show the expandable card
+            recipeDetailsCard.style.display = 'block';
+
+            if (userId) {
+                await createRecipe(recipe);
+                await viewRecipe(recipeId, userId);
+                likeBtn.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error displaying recipe details:', error);
+        } finally {
+            // Hide the spinner
+            spinner.style.display = 'none';
         }
-        const recipe = await response.json();
-
-        // Populate the expandable card with recipe details
-        document.getElementById('detailsTitle').textContent = recipe.title;
-        document.getElementById('detailsImage').src = recipe.image;
-        document.getElementById('detailsImage').alt = recipe.title;
-        document.getElementById('detailsReadyInMinutes').textContent = recipe.readyInMinutes;
-        document.getElementById('detailsInstructions').textContent = recipe.instructions;
-        document.getElementById('detailsSourceUrl').href = recipe
-        document.getElementById('detailsSourceUrl').textContent = recipe.sourceUrl;
-        document.getElementById('detailsIngredients').textContent = recipe.extendedIngredients.join(', ');
-
-        // Show the expandable card
-        recipeDetailsCard.style.display = 'block';
-    } catch (error) {
-        console.error('Error displaying recipe details:', error);
-    } finally {
-        // Hide the spinner
-        spinner.style.display = 'none';
     }
-}
 
-closeDetailsBtn.addEventListener('click', function() {
-    // Hide the details card and show the recipes section
-    recipeDetailsCard.style.display = 'none';
-    recipesList.style.display = 'block';
-    ingredientsList.style.display = 'block';
+    closeDetailsBtn.addEventListener('click', function() {
+        // Hide the details card and show the recipes section
+        recipeDetailsCard.style.display = 'none';
+        recipesList.style.display = 'block';
+        ingredientsList.style.display = 'block';
+    });
+
+    document.getElementById('likeBtn').addEventListener('click', async () => {
+        if (!liked) {
+            document.getElementById('likeBtn').innerHTML = heartFillHtml;
+            liked = true;
+            await likeRecipe(recipeId);
+        } else {
+            document.getElementById('likeBtn').innerHTML = heartEmptyHtml;
+            liked = false;
+            await unlikeRecipe(recipeId);
+        }
+    });
+
+    async function createRecipe(recipe) {
+        try {
+            const response = await fetch('/api/recipes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(recipe),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create recipe');
+            }
+
+            const data = await response.json();
+            console.log('Recipe created:', data);
+        } catch (error) {
+            console.error('Error creating recipe:', error);
+        }
+    }
+
+    async function viewRecipe(recipeId, userId) {
+        try {
+            const response = await fetch(`/api/user/${userId}/view?recipeId=${recipeId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to view recipe');
+            }
+
+            const data = await response.json();
+            console.log('Recipe viewed:', data);
+        } catch (error) {
+            console.error('Error viewing recipe:', error);
+        }
+    }
+
+    async function likeRecipe(recipeId) {
+        try {
+            const response = await fetch(`/api/user/${userId}/like?recipeId=${recipeId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to like recipe');
+            }
+
+            const data = await response.json();
+            console.log('Recipe liked:', data);
+        } catch (error) {
+            console.error('Error liking recipe:', error);
+        }
+    }
+
+    async function unlikeRecipe(recipeId) {
+        try {
+            const response = await fetch(`/api/user/${userId}/unlike?recipeId=${recipeId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to unlike recipe');
+            }
+
+            const data = await response.json();
+            console.log('Recipe unliked:', data);
+        } catch (error) {
+            console.error('Error unliking recipe:', error);
+        }
+    }
+
 });
-
