@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function getRecipesInfo(userRecipes) {
         const recipePromises = userRecipes.map(async recipe => {
-            const response = await fetch(`/api/recipes/getRecipeInfo?id=${recipe.recipeId}`);
+            const response = await fetch(`/api/recipes/${recipe.recipeId}`);
             if (!response.ok) {
             throw new Error('Failed to fetch recipe details');
             }
@@ -65,11 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const recipeElement = document.createElement('div');
         recipeElement.className = 'recipe-preview';
         recipeElement.innerHTML = `
-            <div class="card mb-3 recipe-card" style="max-width: 540px;" data-recipe-id="${recipe.body.id}">
-            <img src="${recipe.body.image}" class="img-fluid rounded-start" alt="${recipe.body.title}">
+            <div class="card mb-3 recipe-card" style="max-width: 540px;" data-recipe-id="${recipe.id}">
+            <img src="${recipe.image}" class="img-fluid rounded-start" alt="${recipe.title}">
                 <div class="card-body">
-                <h5 class="card-title">${recipe.body.title}</h5>
-                <p class="card-text">Ready in: ${recipe.body.readyInMinutes} minutes</p>
+                <h5 class="card-title">${recipe.title}</h5>
+                <p class="card-text">Ready in: ${recipe.readyInMinutes} minutes</p>
                 </div>
             </div>
         `;
@@ -83,13 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     function showRecipeDetails(recipe) {
-      document.getElementById('detailsImage').src = recipe.body.image;
-      document.getElementById('detailsTitle').textContent = recipe.body.title;
-      document.getElementById('detailsReadyInMinutes').textContent = recipe.body.readyInMinutes;
-      document.getElementById('detailsInstructions').textContent = recipe.body.instructions;
-      document.getElementById('detailsSourceUrl').href = recipe.body.sourceUrl;
-      document.getElementById('detailsSourceUrl').textContent = recipe.body.sourceUrl;
-      document.getElementById('detailsIngredients').textContent = recipe.body.extendedIngredients.join(', ');
+      document.getElementById('detailsImage').src = recipe.image;
+      document.getElementById('detailsTitle').textContent = recipe.title;
+      document.getElementById('detailsReadyInMinutes').textContent = recipe.readyInMinutes;
+      document.getElementById('detailsInstructions').textContent = recipe.instructions;
+      document.getElementById('detailsSourceUrl').href = recipe.sourceUrl;
+      document.getElementById('detailsSourceUrl').textContent = recipe.sourceUrl;
+      document.getElementById('detailsIngredients').textContent = recipe.extendedIngredients.join(', ');
       recipe.liked == true ? likeBtn.innerHTML = heartFillHtml : likeBtn.innerHTML = heartEmptyHtml;
       viewedRecipesSection.style.display = 'none';
       recipeDetailsCard.style.display = 'block';
