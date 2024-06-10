@@ -13,21 +13,25 @@ PantryPal is a web application that helps you find recipes based on the ingredie
 - [Setup](#setup)
 
 ## Live Demo
-Check out the live application [here](https://pantrypal.runmydocker-app.com/)
+Check out the live application [here](https://pantrypal.runmydocker-app.com/home)
 
 ## Features
 
 - **Image Upload and Analysis**: Upload an image of your groceries to analyze the ingredients.
-- **Recipe Search**: Find recipes based on the ingredients you have.
+- **Recipe Search**: Find recipes based on your ingredients.
 - **Recipe Details**: View detailed information about each recipe, including preparation instructions and ingredient lists.
-- **Responsive Design**: The application is optimized for both desktop and mobile devices.
+- **User History**: Save your favorite recipes for later.
+- **Responsive Design**: The application is optimized for desktop and mobile devices.
 
 ## Technologies
 
 - **Frontend**: HTML, CSS (Bootstrap), JavaScript
 - **Backend**: Java Spring Boot, FastAPI
 - **Database**: PostgreSQL
-- **External APIs**: Integration with third-party APIs for image analysis and recipe search
+- **External APIs**:
+    - **Image analysis**: OpenAI Vision
+    - **Recipe search and information**: Rapid API
+- **Storage**: AWS S3
 
 ## Setup
 
@@ -46,12 +50,38 @@ git clone https://github.com/yourusername/pantrypal.git
 ```
 
 ### Environment Variables
+Fill in missing variables:
+
+`/Identifier/requirements.txt`
 ```
 API_KEY=your_openai_api_key
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
-SPRING_DATASOURCE_USERNAME=postgres
-SPRING_DATASOURCE_PASSWORD=postgres
-IDENTIFIER_API_TARGET_URL=http://localhost:8000/analyze_image/?image_url=
+```
+
+`/pantrypal/src/main/resources/application.properties`
+```
+spring.application.name=pantrypal
+identifier.api.target.url=http://localhost:8000/analyze_image/
+recipes.api.target.url=https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/
+recipes.api.key=
+recipes.api.host=spoonacular-recipe-food-nutrition-v1.p.rapidapi.com
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+#JPA properties
+spring.jpa.show-sql = true
+spring.jpa.hibernate.ddl-auto = update
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+
+amazon.aws.accesskey=
+amazon.aws.secretkey=
+bucket.url=
+
+spring.thymeleaf.prefix=classpath:/static/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML5
+
 ```
 
 ### Running the Application
