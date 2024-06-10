@@ -51,18 +51,17 @@ body {
     justify-content: center;
   }
 
-  .upload-content {
+  .upload-content,
+  .home-content{
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
   }
   .hero {
     text-align: center;
     padding: 100px 20px;
-    background-size: cover;
-    position: relative;
     z-index: 1;
     width: 60%;
   }
@@ -90,14 +89,19 @@ body {
     text-align: center;
     height: 30%;
     background-color: rgba(255, 255, 255, 0.9);
-    bottom: 0;
-    position: absolute;
     width: 100%;
+    padding-bottom: 50px;
   }
-  .features div {
-    display: inline-block;
+  .features-list {
+    display: flex;
+    justify-content: space-around;
+    vertical-align: top;
+    align-items: center;
+  }
+  .feature {
     width: 30%;
     padding: 10px;
+    white-space: pre-line;
   }
   footer {
     background-color: #fff;
@@ -278,12 +282,15 @@ body {
 
 #uploadSection {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  margin: 20px;
 }
 
+.results,
+#uploadSection {
+    margin-top: 20px;
+}
 .login-section,
 .signup-section {
   padding: 40px;
@@ -308,13 +315,19 @@ body {
     flex-direction: column;
     position: relative;
   }
-  .features div {
+  .features-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .feature {
     width: 100%;
   }
-  .main-content,
-  .upload-content {
+  .upload-content,
+  .results {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
   }
   .upload-content {
       align-items: center;
@@ -335,6 +348,9 @@ body {
   .navbar-container {
     width: 100%;
     padding: 0 20px;
+  }
+  #navbarNav {
+      padding-bottom: 10px;
   }
   .login-section,
   .signup-section {
