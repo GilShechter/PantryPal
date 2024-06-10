@@ -32,9 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        // configure AuthenticationManager so that it knows from where to load
-        // user for matching credentials
-        // Use BCryptPasswordEncoder
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
@@ -51,36 +48,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-
-        // We don't need CSRF for this example
-        // dont authenticate this particular request
-        httpSecurity.csrf().disable().authorizeRequests().antMatchers("/authenticate", "/user", "/actuator/**",
-                "/swagger-ui.html",
-                "/api/swagger-ui.html",
-                "/v2/api-docs",
-                "/configuration/ui",
-                "/swagger-resources/**",
-                "/configuration/security",
-                "/webjars/**",
-                "/api/recipes/searchByIngredients",
-                "/api/recipes/getRecipeInfo",
-                "/api/identifier/**",
-                "/**",
-                "/images/**",
-                "/css/**"
+        httpSecurity.csrf().disable()
+                // Permit all requests to the following endpoints
+                .authorizeRequests()
+                .antMatchers(
+                        "/authenticate",
+                        "/user",
+                        "/actuator/**",
+                        "/swagger-ui.html",
+                        "/api/swagger-ui.html",
+                        "/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/webjars/**",
+                        "/api/recipes/searchByIngredients",
+                        "/api/recipes/getRecipeInfo",
+                        "/api/identifier/**",
+                        "/",
+                        "/images/**",
+                        "/css/**",
+                        "/js/**",
+                        "/**"
                 ).permitAll()
-        .antMatchers(HttpMethod.OPTIONS,"/**").permitAll().
+                // Permit OPTIONS requests to all endpoints
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // Require authentication for the /api/user endpoint
+                .antMatchers("/api/user").authenticated()
+                // All other requests should be permitted
+                .anyRequest().permitAll()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-
-
-        // all other requests need to be authenticated
-        // make sure we use stateless session; session won't be used to
-        // store user's state.
-
-        anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // Add a filter to validate the tokens with every request
+        // Add a filter to validate tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
+

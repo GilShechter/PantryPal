@@ -30,27 +30,24 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
 
     try {
         if (imageFile) {
-            let formData = new FormData();
-            formData.append('imageFile', imageFile);
+            const base64Image = await readFileAsBase64(imageFile);
+            const requestData = { imageFile: base64Image };
+
+            // Upload the image to get ingredients
             const uploadResponse = await fetch('/api/identifier/imageFile', {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
             });
 
             if (!uploadResponse.ok) {
                 throw new Error('Failed to analyze image');
             }
-            const reader = uploadResponse.body.getReader();
-            const decoder = new TextDecoder('utf-8');
-            let result = '';
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) {
-                    break;
-                }
-                result += decoder.decode(value);
-            }
-            requestImageUrl = result;
+
+            const data = await uploadResponse.json();
+            requestImageUrl = data.imageUrl;
         } else if (imageUrl) {
             requestImageUrl = imageUrl;
         } else {
@@ -58,16 +55,19 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
         }
 
         console.log('Request image URL:', requestImageUrl);
-        const formData = new FormData();
-        formData.append('imageUrl', requestImageUrl);
+        const requestData = { imageUrl: requestImageUrl };
         // Analyze the image to get ingredients
         const response = await fetch('/api/identifier', {
             method: 'POST',
-            body: formData,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
         });
 
         if (!response.ok) {
-            throw new Error('Failed to analyze image');
+            const errorText = await response.text();
+            throw new Error(`Failed to analyze image: ${response.status} ${errorText}`);
         }
 
         const data = await response.json();
@@ -256,6 +256,18 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
         } catch (error) {
             console.error('Error unliking recipe:', error);
         }
+    }
+
+    function readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                const base64String = reader.result.split(',')[1]; // Get base64 part
+                resolve(base64String);
+            };
+            reader.onerror = error => reject(error);
+        });
     }
 
 });
