@@ -1,10 +1,7 @@
-from urllib.parse import unquote
-
 from fastapi import FastAPI, HTTPException
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-import requests
 from pydantic import BaseModel
 
 load_dotenv()
