@@ -24,7 +24,6 @@ async def analyze_image(request: ImageRequest):
         raise HTTPException(status_code=400, detail="Missing image_url parameter")
 
     try:
-        await check_image_url(image_url)
         print("Image URL: ", image_url)
         response = client.chat.completions.create(
             model="gpt-4o",
@@ -43,13 +42,6 @@ async def analyze_image(request: ImageRequest):
         return response.choices[0]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-async def check_image_url(image_url: str):
-    response = requests.head(image_url)
-    print("Response: ", response.status_code, "For URL: ", image_url)
-    if response.status_code != 200:
-        raise HTTPException(status_code=500, detail="Invalid image URL")
 
 
 if __name__ == "__main__":
