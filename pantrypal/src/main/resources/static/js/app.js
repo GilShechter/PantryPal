@@ -132,7 +132,16 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
             }
             const recipeJson = await response.json();
 
-            const recipe = recipeJson.body;
+            console.log('Response:', recipeJson);
+
+            let recipe;
+
+            if (!recipeJson.body) {
+                recipe = recipeJson;
+            } else {
+                recipe = recipeJson.body;
+            }
+
 
             // Populate the expandable card with recipe details
             document.getElementById('detailsTitle').textContent = recipe.title;
