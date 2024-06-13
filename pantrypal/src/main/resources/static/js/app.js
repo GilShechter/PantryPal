@@ -130,7 +130,9 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
             if (!response.ok) {
                 throw new Error('Failed to fetch recipe details');
             }
-            const recipe = await response.json();
+            const recipeJson = await response.json();
+
+            const recipe = recipeJson.body;
 
             // Populate the expandable card with recipe details
             document.getElementById('detailsTitle').textContent = recipe.title;
