@@ -17,7 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource(locations = "classpath:application.properties")
 public class LoginTest {
 
@@ -36,6 +36,8 @@ public class LoginTest {
     private static final String TEST_USER = "testUser";
     private static final String TEST_PASS = "testPass";
     private static final String WRONG_PASS = "wrongPass";
+    private static final String LOGIN_FAIL_MESSAGE_ID = "login-fail-message";
+    private static final String LOGIN_FAIL_MESSAGE = "Signup failed. Please try again.";
 
     @BeforeAll
     public static void setupClass() {
@@ -50,7 +52,7 @@ public class LoginTest {
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(options);
-        baseUrl = env.getProperty("base.url");
+        baseUrl = env.getProperty("base.url", "http://localhost:8080");
     }
 
     @AfterEach
@@ -70,6 +72,8 @@ public class LoginTest {
     public void testLoginFail() {
         login(TEST_USER, WRONG_PASS);
         assertEquals(baseUrl + LOGIN_URL, driver.getCurrentUrl());
+        WebElement error = driver.findElement(By.id(LOGIN_FAIL_MESSAGE_ID));
+        assertEquals(LOGIN_FAIL_MESSAGE, error.getText());
     }
 
     private void login(String username, String password) {
@@ -82,7 +86,7 @@ public class LoginTest {
 
     private void waitForPageLoad() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
