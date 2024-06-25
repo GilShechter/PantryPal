@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('userId', data.id);
                 window.location.href = '/home'; // Redirect to home page
             } else {
-                alert('Login failed. Please check your credentials and try again.');
+                document.getElementById('login-fail-message').innerText = 'Signup failed. Please try again.';
             }
         });
     }
