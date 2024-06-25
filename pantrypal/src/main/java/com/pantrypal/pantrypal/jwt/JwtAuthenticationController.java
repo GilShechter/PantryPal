@@ -36,7 +36,11 @@ public class JwtAuthenticationController {
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        try{
+            authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Invalid credentials");
+        }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final DBUser user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails);
