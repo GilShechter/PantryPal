@@ -50,11 +50,34 @@ public class JwtAuthenticationController {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<?> createUser(@RequestBody JwtRequest userRequest) throws Exception {
         String encodedPass = passwordEncoder.encode(userRequest.getPassword());
+        if (userService.findUserName(userRequest.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().body("User already exists");
+        }
         DBUser user = DBUser.UserBuilder.anUser().name(userRequest.getUsername())
                 .password(encodedPass).build();
         userService.save(user);
         UserDetails userDetails = new User(userRequest.getUsername(), encodedPass, new ArrayList<>());
         return ResponseEntity.ok(new JwtResponse(jwtTokenUtil.generateToken(userDetails), user.getId()));
+    }
+
+    @RequestMapping(value = "{username}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        try {
+            userService.deleteByUserName(username);
+            return ResponseEntity.ok("User: " + username + " deleted");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("User: " + username + " not found");
+        }
+    }
+
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
+        try {
+            userService.deleteById(id);
+            return ResponseEntity.ok("User deleted");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
     }
 
     private void authenticate(String username, String password) throws Exception {
