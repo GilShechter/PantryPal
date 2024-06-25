@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('userId', data.id);
                 window.location.href = '/home'; // Redirect to home page
             } else {
-                document.getElementById('login-fail-message').innerText = 'Signup failed. Please try again.';
+                document.getElementById('login-fail-message').innerText = 'Sign in failed. Please try again.';
             }
         });
     }
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmPassword = document.getElementById('confirmPasswordInput').value;
 
             if (password !== confirmPassword) {
-                alert('Passwords do not match. Please try again.');
+                document.getElementById('signup-fail-message').innerText = 'Passwords do not match. Please try again.';
                 return;
             }
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('userId', data.id);
                 window.location.href = '/home'; // Redirect to home page
             } else {
-                alert('Signup failed. Please try again.');
+                document.getElementById('signup-fail-message').innerText = 'Signup failed. Please try again.';
             }
         });
     }
