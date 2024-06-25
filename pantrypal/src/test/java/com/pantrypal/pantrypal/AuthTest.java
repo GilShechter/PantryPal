@@ -1,5 +1,6 @@
 package com.pantrypal.pantrypal;
 
+import com.pantrypal.pantrypal.jwt.DBUserService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,25 +20,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource(locations = "classpath:application.properties")
-public class LoginTest {
+public class AuthTest {
 
     private WebDriver driver;
 
     @Autowired
     private Environment env;
 
+    @Autowired
+    private DBUserService userService;
+
     private String baseUrl;
 
     private static final String LOGIN_URL = "/login";
     private static final String HOME_URL = "/home";
+    private static final String SIGNUP_URL = "/signup";
     private static final String USERNAME_INPUT_ID = "userNameInput";
     private static final String PASSWORD_INPUT_ID = "passwordInput";
+    private static final String CONFIRM_PASSWORD_INPUT_ID = "confirmPasswordInput";
     private static final String SIGN_IN_BUTTON_XPATH = "//button[text()='Sign in']";
+    private static final String SIGN_UP_BUTTON_XPATH = "//button[text()='Sign up']";
     private static final String TEST_USER = "testUser";
     private static final String TEST_PASS = "testPass";
     private static final String WRONG_PASS = "wrongPass";
+    private static final String MISMATCHED_PASS = "mismatchedPass";
     private static final String LOGIN_FAIL_MESSAGE_ID = "login-fail-message";
-    private static final String LOGIN_FAIL_MESSAGE = "Signup failed. Please try again.";
+    private static final String LOGIN_FAIL_MESSAGE = "Sign in failed. Please try again.";
+    private static final String SIGNUP_FAIL_MESSAGE_ID = "signup-fail-message";
+    private static final String SIGNUP_FAIL_MESSAGE = "Signup failed. Please try again.";
+    private static final String MISMATCHED_PASS_MESSAGE = "Passwords do not match. Please try again.";
 
     @BeforeAll
     public static void setupClass() {
@@ -53,6 +64,11 @@ public class LoginTest {
         options.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(options);
         baseUrl = env.getProperty("base.url", "http://localhost:8080");
+        try{
+            userService.deleteByUserName(TEST_USER);
+        } catch (Exception e) {
+            // do nothing
+        }
     }
 
     @AfterEach
@@ -60,10 +76,44 @@ public class LoginTest {
         if (driver != null) {
             driver.quit();
         }
+        try{
+            userService.deleteByUserName(TEST_USER);
+        } catch (Exception e) {
+            // do nothing
+        }
+    }
+
+    @Test
+    public void testSignUp() {
+        signUp(TEST_USER, TEST_PASS, TEST_PASS);
+        String expectedUrl = baseUrl + HOME_URL;
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+    }
+
+    @Test
+    public void testSignUpWithMismatchedPasswords() {
+        signUp(TEST_USER, TEST_PASS, MISMATCHED_PASS);
+        String expectedUrl = baseUrl + SIGNUP_URL;
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+        WebElement error = driver.findElement(By.id(SIGNUP_FAIL_MESSAGE_ID));
+        assertEquals(MISMATCHED_PASS_MESSAGE, error.getText());
+    }
+
+    @Test
+    public void testSignUpWithExistingUsername() {
+        signUp(TEST_USER, TEST_PASS, TEST_PASS);
+        logout();
+        signUp(TEST_USER, TEST_PASS, TEST_PASS);
+        String expectedUrl = baseUrl + SIGNUP_URL;
+        assertEquals(expectedUrl, driver.getCurrentUrl());
+        WebElement error = driver.findElement(By.id(SIGNUP_FAIL_MESSAGE_ID));
+        assertEquals(SIGNUP_FAIL_MESSAGE, error.getText());
     }
 
     @Test
     public void testLogin() {
+        signUp(TEST_USER, TEST_PASS, TEST_PASS);
+        logout();
         login(TEST_USER, TEST_PASS);
         assertEquals(baseUrl + HOME_URL, driver.getCurrentUrl());
     }
@@ -76,11 +126,26 @@ public class LoginTest {
         assertEquals(LOGIN_FAIL_MESSAGE, error.getText());
     }
 
+    private void signUp(String username, String password, String confirmPassword) {
+        driver.get(baseUrl + SIGNUP_URL);
+        driver.findElement(By.id(USERNAME_INPUT_ID)).sendKeys(username);
+        driver.findElement(By.id(PASSWORD_INPUT_ID)).sendKeys(password);
+        driver.findElement(By.id(CONFIRM_PASSWORD_INPUT_ID)).sendKeys(confirmPassword);
+        driver.findElement(By.xpath(SIGN_UP_BUTTON_XPATH)).click();
+        waitForPageLoad();
+    }
+
     private void login(String username, String password) {
         driver.get(baseUrl + LOGIN_URL);
         driver.findElement(By.id(USERNAME_INPUT_ID)).sendKeys(username);
         driver.findElement(By.id(PASSWORD_INPUT_ID)).sendKeys(password);
         driver.findElement(By.xpath(SIGN_IN_BUTTON_XPATH)).click();
+        waitForPageLoad();
+    }
+
+    private void logout() {
+        driver.get(baseUrl + HOME_URL);
+        driver.findElement(By.id("logoutBtn")).click();
         waitForPageLoad();
     }
 

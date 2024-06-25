@@ -39,6 +39,19 @@ public class DBUserService {
         userRepository.save(user);
     }
 
+    public void deleteByUserName(String username) {
+        try {
+            long userId = userRepository.findByName(username).orElseThrow(() -> new Exception("User: " + username + "not found")).getId();
+            userRepository.deleteById(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
     public UserRecipe viewRecipe(Long userId, int recipeId) {
         userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         recipeRepository.findById(recipeId).orElseThrow(() -> new RuntimeException("Recipe not found"));
